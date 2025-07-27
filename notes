@@ -1,0 +1,21 @@
+
+-- Dynamic Tank Methods:
+getMaxPos
+isFormed
+getInputItem
+decrementContainerEditMode
+getContainerEditMode
+getOutputItem
+getMinPos
+getWidth
+getTankCapacity
+getFilledPercentage
+getComparatorLevel
+getChemicalTankCapacity
+help
+getHeight
+getStored
+incrementContainerEditMode
+getLength
+setContainerEditMode
+

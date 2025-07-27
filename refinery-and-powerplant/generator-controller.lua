@@ -8,7 +8,7 @@ while true do
     local capacitor = peripheral.wrap("enderio:basic_capacitor_bank_0")
     local energy = capacitor.getEnergy()
     local energy_capacity = capacitor.getEnergyCapacity()
-    local energy_percentage = math.floor(((energy / capacitor.getEnergyCapacity()) * 100) + 0.5)
+    local energy_percentage = math.floor(((energy / capacitor.getEnergyCapacity()) * 100) + 0.5) / 10
     local generator_status = generator.getOutput(relay_side) and "OFF" or "ON"
     term.setCursorPos(1, 4)
     term.clearLine()

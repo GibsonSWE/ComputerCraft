@@ -4,10 +4,11 @@ print("Water Pump Controller is running...")
 
 
 while true do
-    local water_tank = peripheral.wrap("railcraft:steel_tank_0").tanks()[1]
-    local pump = peripheral.wrap("redstone_relay_2")
-    local water_tank_capacity = 4000000  -- Set the capacity of the water tank to 4,000,000 mb
-    local water_tank_percentage = math.floor(((water_tank["amount"] / water_tank_capacity) * 100) + 0.5)
+    local water_tank = peripheral.wrap("dynamicValve_2")
+    local pump = peripheral.wrap("redstone_relay_1")
+    local water_tank_capacity = water_tank.getTankCapacity()
+    --local water_tank_percentage = math.floor(((water_tank. / water_tank_capacity) * 100) + 0.5)
+    local water_tank_percentage = math.floor(water_tank.getFilledPercentage() + 0.5) / 10
     local pump_status = pump.getOutput("right") and "ON" or "OFF"
     term.setCursorPos(1, 4)
     term.clearLine()

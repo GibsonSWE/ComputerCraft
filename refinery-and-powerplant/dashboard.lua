@@ -40,11 +40,14 @@ while true do
     local generator_relay_side = "front"
     local generator_status = generator_relay.getOutput(generator_relay_side) and "OFF" or "ON"
     
-    local capacitor = peripheral.wrap("enderio:basic_capacitor_bank_0")
-    local energy = capacitor.getEnergy()
-    local energy_capacity = capacitor.getEnergyCapacity()
-    local energy_percentage = math.floor(((energy / capacitor.getEnergyCapacity()) * 100) + 0.5)
-    
+    local capacitor = peripheral.wrap("inductionPort_0")
+    local energy = capacitor.getEnergy() / 2.5 -- Convert from Joules to RF/FE
+    local energy_capacity = capacitor.getMaxEnergy() / 2.5 -- Convert from Joules to RF/FE
+    local energy_percentage = math.floor((capacitor.getEnergyFilledPercentage()) + 0.5)
+    local energy_output = capacitor.getLastOutput() / 2.5 -- Convert from Joules to RF/FE
+    local energy_input = capacitor.getLastInput() / 2.5 -- Convert from Joules to RF/FE
+    local transfer_cap = capacitor.getTransferCap() / 2.5 -- Convert from Joules to RF/FE
+
     local water_tank = peripheral.wrap("dynamicValve_2")
     local water_tank_stored = water_tank.getStored()
     local water_tank_capacity = water_tank.getTankCapacity()
@@ -81,10 +84,18 @@ while true do
     line_number = 6
     left_pane.setCursorPos(1, line_number)
     left_pane.clearLine()
-    left_pane.write("Capacitor Charge: " .. energy_percentage .. "%")
+    left_pane.write("Capacitor Charge: " .. formatNumber(energy) .. "FE / " .. formatNumber(energy_capacity) .. "FE (" .. energy_percentage .. "%)")
+    line_number = line_number + 1
+    left_pane.setCursorPos(1, line_number)
+    left_pane.clearLine()
+    left_pane.write("Output Rate: " .. energy_output .. " FE/t")
+    line_number = line_number + 1
+    left_pane.setCursorPos(1, line_number)
+    left_pane.clearLine()
+    left_pane.write("Input Rate: " .. energy_input .. " FE/t")
     right_pane.setCursorPos(1, line_number)
     right_pane.clearLine()
-    right_pane.write("Water Tank: " .. water_tank_percentage .. "% (" .. formatNumber(water_tank_stored.amount / 1000) .. "B)")
+    right_pane.write("Water Tank: " .. water_tank_percentage .. "% (" .. formatNumber(water_tank_stored.amount) .. "B)")
     line_number = line_number + 1
     left_pane.setCursorPos(1, line_number)
     left_pane.clearLine()
@@ -106,35 +117,35 @@ while true do
     left_pane_col1.write("Oil Tank:")
     left_pane_col2.setCursorPos(1, line_number)
     left_pane_col2.clearLine()
-    left_pane_col2.write(oil_tank_percentage .. "% (" .. formatNumber(oil_tank_stored.amount / 1000) .. "B)")
+    left_pane_col2.write(oil_tank_percentage .. "% (" .. formatNumber(oil_tank_stored.amount) .. "B)")
     line_number = line_number + 1
     left_pane_col1.setCursorPos(1, line_number)
     left_pane_col1.clearLine()
     left_pane_col1.write("Diesel Tank:")
     left_pane_col2.setCursorPos(1, line_number)
     left_pane_col2.clearLine()
-    left_pane_col2.write(diesel_tank_percentage .. "% (" .. formatNumber(diesel_tank_stored.amount / 1000) .. "B)")
+    left_pane_col2.write(diesel_tank_percentage .. "% (" .. formatNumber(diesel_tank_stored.amount) .. "B)")
     line_number = line_number + 1
     left_pane_col1.setCursorPos(1, line_number)
     left_pane_col1.clearLine()
     left_pane_col1.write("Gasoline Tank:")
     left_pane_col2.setCursorPos(1, line_number)
     left_pane_col2.clearLine()
-    left_pane_col2.write(gasoline_tank_percentage .. "% (" .. formatNumber(gasoline_tank_stored.amount / 1000) .. "B)")
+    left_pane_col2.write(gasoline_tank_percentage .. "% (" .. formatNumber(gasoline_tank_stored.amount) .. "B)")
     line_number = line_number + 1
     left_pane_col1.setCursorPos(1, line_number)
     left_pane_col1.clearLine()
     left_pane_col1.write("LPG Tank:")
     left_pane_col2.setCursorPos(1, line_number)
     left_pane_col2.clearLine()
-    left_pane_col2.write(lpg_tank_percentage .. "% (" .. formatNumber(lpg_tank_stored.amount / 1000) .. "B)")
+    left_pane_col2.write(lpg_tank_percentage .. "% (" .. formatNumber(lpg_tank_stored.amount) .. "B)")
     line_number = line_number + 1
     left_pane_col1.setCursorPos(1, line_number)
     left_pane_col1.clearLine()
     left_pane_col1.write("Kerosene Tank:")
     left_pane_col2.setCursorPos(1, line_number)
     left_pane_col2.clearLine()
-    left_pane_col2.write(kerosene_tank_percentage .. "% (" .. formatNumber(kerosene_tank_stored.amount / 1000) .. "B)")
+    left_pane_col2.write(kerosene_tank_percentage .. "% (" .. formatNumber(kerosene_tank_stored.amount) .. "B)")
 
     sleep(0.2)
 end

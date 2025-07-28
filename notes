@@ -19,3 +19,26 @@ incrementContainerEditMode
 getLength
 setContainerEditMode
 
+
+-- Battery Methods:
+getMaxPos
+isFormed
+getInputItem
+getInstalledProviders
+getOutputItem
+getMode
+getMinPos
+getWidth
+getTransferCap
+getLastInput
+getComparatorLevel
+getEnergy
+help
+getHeight
+getEnergyNeeded
+getLastOutput
+getInstalledCells
+getLength
+getMode
+getMaxEnergy
+getEnergyFilledPercentage

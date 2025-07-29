@@ -8,8 +8,7 @@ while true do
     local pump = peripheral.wrap("redstone_relay_1")
     local water_tank_stored = water_tank.getStored() or 0
     local water_tank_capacity = water_tank.getTankCapacity() or 0
-    --local water_tank_percentage = math.floor(water_tank.getFilledPercentage() + 0.5) / 10
-    local water_tank_percentage = water_tank.getFilledPercentage() * 100 -- Get the filled percentage as a decimal and multiply by 100 for percentage
+    local water_tank_percentage = water_tank.getFilledPercentage() * 100        -- Get the filled percentage as a decimal and multiply by 100 for percentage
     local pump_status = pump.getOutput("right") and "ON" or "OFF"
     term.setCursorPos(1, 4)
     term.clearLine()
@@ -20,9 +19,9 @@ while true do
     term.clearLine()
     term.write("Pump Status: " .. pump_status)
 
-    if water_tank_percentage < 25 and not pump.getOutput("right") then            -- Check if the water tank is less than 2,000,000 mb (50% of 4,000,000 mb)
+    if water_tank_percentage < 25 and not pump.getOutput("right") then          -- Check if the water tank is less than 25% filled
         pump.setOutput("right", true)
-    elseif water_tank_percentage >= 75 and pump.getOutput("right") then  -- Check if the water tank is greater than or equal to 3,000,000 mb (75% of 4,000,000 mb)
+    elseif water_tank_percentage >= 75 and pump.getOutput("right") then         -- Check if the water tank is greater than or equal to 75% filled
         pump.setOutput("right", false)
     end
     os.sleep(0.5)

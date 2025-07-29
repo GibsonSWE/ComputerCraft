@@ -6,6 +6,10 @@ local left_pane_divider = math.floor(mid_divider / 2)
 local left_pane_col1 = window.create(left_pane, 1, 1, left_pane_divider, monitor_height, false)
 local left_pane_col2 = window.create(left_pane, left_pane_divider + 1, 1, left_pane_divider, monitor_height, false)
 local right_pane = window.create(monitor, mid_divider + 1, 1, mid_divider, monitor_height, false)
+local right_pane_divider = math.floor(mid_divider / 2)
+local right_pane_col1 = window.create(right_pane, 1, 1, right_pane_divider, monitor_height, false)
+local right_pane_col2 = window.create(right_pane, right_pane_divider + 1, 1, right_pane_divider, monitor_height, false)
+
 local line_number = 1
 
 term.setCursorPos(1, 2)
@@ -16,19 +20,22 @@ left_pane.setVisible(true)
 left_pane_col1.setVisible(true)
 left_pane_col2.setVisible(true)
 right_pane.setVisible(true)
+right_pane_col1.setVisible(true)
+right_pane_col2.setVisible(true)
 
 monitor.setTextScale(0.5)
 monitor.clear()
 line_number = 3
 monitor.setCursorPos(20, line_number)
 monitor.write("Refinery & Powerplant Dashboard")
-monitor.setTextScale(0.5)
 
 function formatNumber(num)
-    if num >= 1e6 then
-        return string.format("%.2fM", num / 1e6)
+    if num >= 1e9 then
+        return string.format("%.2f G", num / 1e9)
+    elseif num >= 1e6 then
+        return string.format("%.2f M", num / 1e6)
     elseif num >= 1e3 then
-        return string.format("%.2fK", num / 1e3)
+        return string.format("%.2f K", num / 1e3)
     else
         return tostring(num)
     end
@@ -81,71 +88,43 @@ while true do
     local gasoline_tank_capacity = gasoline_tank.getTankCapacity()
     local gasoline_tank_percentage = string.format("%.1f", gasoline_tank.getFilledPercentage() * 100)
 
+    -- Helper function to write a line to a window at a given line number
+    local function writeLine(win, col, line, text)
+        win.setCursorPos(col, line)
+        win.clearLine()
+        win.write(text)
+    end
+
+    -- Helper function to write tank info
+    local function writeColumn(col1, col2, line, key, value)
+        writeLine(col1, 1, line, key .. ":")
+        writeLine(col2, 1, line, value)
+    end
+
     line_number = 6
-    left_pane.setCursorPos(1, line_number)
-    left_pane.clearLine()
-    left_pane.write("Capacitor Charge: " .. formatNumber(energy) .. "FE / " .. formatNumber(energy_capacity) .. "FE (" .. energy_percentage .. "%)")
+    writeColumn(left_pane_col1, left_pane_col2, line_number, "Capacitor Charge: ", formatNumber(energy) .. "FE / " .. formatNumber(energy_capacity) .. "FE (" .. energy_percentage .. "%)")
     line_number = line_number + 1
-    left_pane.setCursorPos(1, line_number)
-    left_pane.clearLine()
-    left_pane.write("Output Rate: " .. energy_output .. " FE/t")
+    writeColumn(left_pane_col1, left_pane_col2, line_number, "Output Rate: ", energy_output .. " FE/t")
     line_number = line_number + 1
-    left_pane.setCursorPos(1, line_number)
-    left_pane.clearLine()
-    left_pane.write("Input Rate: " .. energy_input .. " FE/t")
-    right_pane.setCursorPos(1, line_number)
-    right_pane.clearLine()
-    right_pane.write("Water Tank: " .. water_tank_percentage .. "% (" .. formatNumber(water_tank_stored.amount) .. "B)")
+    writeColumn(left_pane_col1, left_pane_col2, line_number, "Input Rate: ", energy_input .. " FE/t")
+    writeColumn(right_pane_col1, right_pane_col2, line_number, "Water Tank: ", water_tank_percentage .. "%", water_tank_stored)
     line_number = line_number + 1
-    left_pane.setCursorPos(1, line_number)
-    left_pane.clearLine()
-    left_pane.write("Thresholds: 20% / 90%")
-    right_pane.setCursorPos(1, line_number)
-    right_pane.clearLine()
-    right_pane.write("Thresholds: 25% / 75%")
+    writeColumn(left_pane_col1, left_pane_col2, line_number, "Thresholds: ", "20% / 90%")
+    writeColumn(right_pane_col1, right_pane_col2, line_number, "Thresholds: ", "25% / 75%")
     line_number = line_number + 1
-    left_pane.setCursorPos(1, line_number)
-    left_pane.clearLine()
-    left_pane.write("Generator Status: " .. generator_status)
-    right_pane.setCursorPos(1, line_number)
-    right_pane.clearLine()
-    right_pane.write("Pump Status: " .. pump_status)
+    writeColumn(left_pane_col1, left_pane_col2, line_number, "Generator Status: " .. generator_status)
+    writeColumn(right_pane_col1, right_pane_col2, line_number, "Pump Status: " .. pump_status)
 
     line_number = line_number + 2
-    left_pane_col1.setCursorPos(1, line_number)
-    left_pane_col1.clearLine()
-    left_pane_col1.write("Oil Tank:")
-    left_pane_col2.setCursorPos(1, line_number)
-    left_pane_col2.clearLine()
-    left_pane_col2.write(oil_tank_percentage .. "% (" .. formatNumber(oil_tank_stored.amount) .. "B)")
+    writeColumn(left_pane_col1, left_pane_col2, line_number, "Oil Tank", oil_tank_percentage, oil_tank_stored)
     line_number = line_number + 1
-    left_pane_col1.setCursorPos(1, line_number)
-    left_pane_col1.clearLine()
-    left_pane_col1.write("Diesel Tank:")
-    left_pane_col2.setCursorPos(1, line_number)
-    left_pane_col2.clearLine()
-    left_pane_col2.write(diesel_tank_percentage .. "% (" .. formatNumber(diesel_tank_stored.amount) .. "B)")
+    writeColumn(left_pane_col1, left_pane_col2, line_number, "Diesel Tank", diesel_tank_percentage, diesel_tank_stored)
     line_number = line_number + 1
-    left_pane_col1.setCursorPos(1, line_number)
-    left_pane_col1.clearLine()
-    left_pane_col1.write("Gasoline Tank:")
-    left_pane_col2.setCursorPos(1, line_number)
-    left_pane_col2.clearLine()
-    left_pane_col2.write(gasoline_tank_percentage .. "% (" .. formatNumber(gasoline_tank_stored.amount) .. "B)")
+    writeColumn(left_pane_col1, left_pane_col2, line_number, "Gasoline Tank", gasoline_tank_percentage, gasoline_tank_stored)
     line_number = line_number + 1
-    left_pane_col1.setCursorPos(1, line_number)
-    left_pane_col1.clearLine()
-    left_pane_col1.write("LPG Tank:")
-    left_pane_col2.setCursorPos(1, line_number)
-    left_pane_col2.clearLine()
-    left_pane_col2.write(lpg_tank_percentage .. "% (" .. formatNumber(lpg_tank_stored.amount) .. "B)")
+    writeColumn(left_pane_col1, left_pane_col2, line_number, "LPG Tank", lpg_tank_percentage, lpg_tank_stored)
     line_number = line_number + 1
-    left_pane_col1.setCursorPos(1, line_number)
-    left_pane_col1.clearLine()
-    left_pane_col1.write("Kerosene Tank:")
-    left_pane_col2.setCursorPos(1, line_number)
-    left_pane_col2.clearLine()
-    left_pane_col2.write(kerosene_tank_percentage .. "% (" .. formatNumber(kerosene_tank_stored.amount) .. "B)")
+    writeColumn(left_pane_col1, left_pane_col2, line_number, "Kerosene Tank", kerosene_tank_percentage, kerosene_tank_stored)
 
     sleep(0.2)
 end

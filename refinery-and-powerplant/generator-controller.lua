@@ -6,7 +6,7 @@ print("Generator Controller is running...")
 while true do
     local generator  = peripheral.wrap("redstone_relay_2")
     local relay_side = "front"
-    local capacitor = peripheral.wrap("inductionPort_0") -- Convert from Joules to RF/FE
+    local capacitor = peripheral.wrap("inductionPort_0")
     local energy = capacitor.getEnergy() / 2.5 -- Convert from Joules to RF/FE
     local energy_capacity = capacitor.getMaxEnergy() / 2.5 -- Convert from Joules to RF/FE
     local energy_percentage = math.floor((capacitor.getEnergyFilledPercentage()) + 0.5)

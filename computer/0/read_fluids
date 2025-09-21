@@ -1,0 +1,13 @@
+while true do
+  local machine = peripheral.wrap("back")
+  local tanks = machine.tanks()
+
+  term.clear()
+  term.setCursorPos(1,1)
+  for i, tank in ipairs(tanks) do
+    local fluid_raw = tank.name
+    local fluid_pretty = string.match(fluid_raw, ":(.+)"):gsub("^(%l)", string.upper)
+    print(fluid_pretty .. ": " .. tank.amount)
+  end
+  sleep(1)
+end

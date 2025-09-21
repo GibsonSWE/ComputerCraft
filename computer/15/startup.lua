@@ -1,0 +1,7 @@
+term.clear()
+term.setCursorPos(1,2)
+print("Nuclear Reactor Controller")
+term.setCursorPos(1,4)
+shell.run("bg reactor-controller")
+shell.run("bg reactor-monitor")
+shell.run("bg reactor-mon-wireless")

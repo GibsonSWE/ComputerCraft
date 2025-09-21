@@ -1,0 +1,8 @@
+local inv = peripheral.wrap("right")
+local items = inv.list()
+
+for slot, item in pairs(items) do
+  local item_raw = item.name .. ": " .. item.count
+  local item_clean = item_raw:gsub("minecraft%:", "")
+  print(item_clean)
+end

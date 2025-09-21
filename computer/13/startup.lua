@@ -1,0 +1,8 @@
+term.clear()
+term.setCursorPos(1,2)
+print("Refinery and Power Generator Controller")
+term.setCursorPos(1,4)
+shell.run("bg dashboard")
+shell.run("bg power-monitor")
+shell.run("bg controllers/generator-controller")
+shell.run("bg controllers/water-pump-controller")

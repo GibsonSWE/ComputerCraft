@@ -1,0 +1,46 @@
+local chest = peripheral.wrap("back")
+local mon = peripheral.wrap("top")
+term.clear()
+term.setCursorPos(1,1)
+print("Running Inventory Monitoring...")
+
+local function titleCase(str)
+  return str:gsub("_", " "):gsub("(%a)([%w']*)", function(first, rest)
+    return first:upper() .. rest:lower()
+  end)
+end    
+
+
+while true do
+  local chest_data = chest.list()
+  local line = 1
+  local item_totals = {}
+  mon.clear()
+  mon.setCursorPos(1, line)
+  mon.setTextScale(0.5)
+  
+  for _, item in pairs(chest_data) do
+    local raw_name = item.name
+    local pretty_name = titleCase(raw_name:match(":(.+)") or raw_name)
+
+    if item_totals[pretty_name] then
+      item_totals[pretty_name] = item_totals[pretty_name] + item.count
+    else
+      item_totals[pretty_name] = item.count
+    end
+  end      
+
+  local sorted_names = {}
+  for name in pairs(item_totals) do
+    table.insert(sorted_names, name)
+  end
+  table.sort(sorted_names)
+      
+  for _, name in pairs(sorted_names) do
+    mon.setCursorPos(1, line)
+    mon.write(name .. ": " .. item_totals[name])
+    line = line + 1
+  end
+  
+  sleep(1)
+end
